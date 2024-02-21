@@ -27,7 +27,7 @@
       </calcite-navigation>
 
       <calcite-shell-panel slot="panel-end" display-mode="float">
-        <calcite-panel id="view-properties-panel">
+        <calcite-panel id="view-properties-panel" heading="Current view property values" collapsible>
           <calcite-label id="zoom-label" layout="inline">
             <calcite-chip id="zoom-chip" value="unknown" kind="brand"></calcite-chip>
             Zoom
@@ -43,7 +43,12 @@
             Longitude
           </calcite-label>
         </calcite-panel>
+
         <calcite-panel id="layer-list-panel"> </calcite-panel>
+
+        <calcite-panel id="visible-layers-panel" heading="Current visible layers" collapsible>
+          <calcite-list id="visible-layers-list"></calcite-list>
+        </calcite-panel>
       </calcite-shell-panel>
 
       <div id="viewDiv"></div>

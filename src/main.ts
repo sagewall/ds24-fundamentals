@@ -4,6 +4,7 @@ import MapView from "@arcgis/core/views/MapView";
 import LayerList from "@arcgis/core/widgets/LayerList";
 import { defineCustomElements } from "@esri/calcite-components/dist/loader";
 import "./style.css";
+import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 
 defineCustomElements(window, {
   resourcesUrl: "https://js.arcgis.com/calcite-components/2.4.0/assets",
@@ -59,6 +60,26 @@ layerList.selectedItems.on("change", (event) => {
     }
   });
 });
+
+reactiveUtils.watch(
+  () =>
+    view.map.layers.map((layer) => {
+      document.querySelector("#visible-layers-list")!.innerHTML = "";
+      if (layer.visible) {
+        return layer.title;
+      }
+    }),
+  (titles) => {
+    titles.forEach((title) => {
+      if (title) {
+        const listItem = document.createElement("calcite-list-item");
+        listItem.label = title;
+        listItem.value = title;
+        document.querySelector("#visible-layers-list")!.appendChild(listItem);
+      }
+    });
+  },
+);
 
 // Set up the user interface
 function setUp() {
