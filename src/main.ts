@@ -34,6 +34,16 @@ const layerList = new LayerList({
   },
 });
 
+view.watch("stationary", (newValue, oldValue) => {
+  console.log(`the stationary property changed from ${oldValue}, to ${newValue}`);
+
+  if (newValue === true) {
+    document.querySelector("#zoom-chip")!.innerHTML = `${view.zoom.toFixed(0)}`;
+    document.querySelector("#latitude-chip")!.innerHTML = `${view.center.latitude.toFixed(3)}`;
+    document.querySelector("#longitude-chip")!.innerHTML = `${view.center.longitude.toFixed(3)}`;
+  }
+});
+
 layerList.selectedItems.on("change", (event) => {
   const { removed, added } = event;
   removed.forEach((item) => {
