@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/esri.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body>
+    <calcite-shell content-behind>
+      <calcite-navigation navigation-action slot="header" id="nav">
+        <calcite-navigation-logo
+          href=""
+          icon="image-layer"
+          alt="Application logo"
+          slot="logo"
+          heading="ArcGIS Maps SDK for JavaScript: Programming Patters and API Fundamentals"
+          description="Esri Developer Summit 2024"
+        ></calcite-navigation-logo>
+        <calcite-action-pad layout="horizontal" expand-disabled slot="content-end">
+          <calcite-action id="toggle-modal" text="About this application" icon="information"></calcite-action>
+        </calcite-action-pad>
+
+        <calcite-tooltip placement="bottom" reference-element="toggle-modal" close-on-click slot="content-end"
+          >About this application</calcite-tooltip
+        >
+      </calcite-navigation>
+
+      <calcite-shell-panel slot="panel-end" display-mode="float">
+        <calcite-panel id="layer-list-panel"> </calcite-panel>
+      </calcite-shell-panel>
+
+      <div id="viewDiv"></div>
+    </calcite-shell>
+
+    <!-- Demo template interactive elements -->
+    <calcite-modal id="modal">
+      <div slot="header">About this application</div>
+      <div slot="content">
+        <calcite-notice open>
+          <span slot="title"
+            >This demonstration application is a companion resource to the "ArcGIS Maps SDK for JavaScript: Programming
+            Patterns and API Fundamentals" session at Esri Developer Summit 2024.
+          </span>
+        </calcite-notice>
+        This example illustrates how to listen to collection events in the ArcGIS API for JavaScript.
+        <calcite-link target="_blank" href=""> a great topic</calcite-link>.
+        <ul>
+          <li>Listening to collection events</li>
+          <li>Map</li>
+          <li>MapView</li>
+          <li>LayerList widget</li>
+        </ul>
+        Learn more in the documentation
+        <calcite-link
+          target="_blank"
+          href="https://developers.arcgis.com/javascript/latest/api-reference/esri-core-Collection.html"
+          >Collection</calcite-link
+        >.
+        <calcite-link target="_blank" href="https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html"
+          >Map</calcite-link
+        >.
+        <calcite-link
+          target="_blank"
+          href="https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html"
+          >MapView</calcite-link
+        >.
+        <calcite-link
+          target="_blank"
+          href="https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-LayerList.html"
+          >LayerList</calcite-link
+        >.
+        <hr />
+        <calcite-link target="_blank" href="">Application source code</calcite-link>
+        is available in the
+        <calcite-link target="_blank" href="https://github.com/EsriDevEvents/"
+          >Esri Developer Events GitHub organization</calcite-link
+        >.
+        <hr />
+        Map data is sourced from the
+        <calcite-link target="_blank" href="https://livingatlas.arcgis.com/en/home/"
+          >ArcGIS Living Atlas of the World</calcite-link
+        >.
+      </div>
+    </calcite-modal>
+
+    <calcite-sheet id="sheet" display-mode="float" width-scale="m">
+      <calcite-panel
+        heading="Esri Developer Summit 2024"
+        description="Helpful conference links"
+        closable
+        id="sheet-panel"
+      >
+        <calcite-menu layout="vertical" label="2024 Developer Summit Menu">
+          <calcite-menu-item
+            text="2024 Developer Summit Overview"
+            icon-end="launch"
+            href="https://www.esri.com/en-us/about/events/devsummit/overview"
+            target="_blank"
+          ></calcite-menu-item>
+          <calcite-menu-item
+            text="Esri Developer Events GitHub"
+            icon-end="launch"
+            href="https://github.com/EsriDevEvents"
+            target="_blank"
+          ></calcite-menu-item>
+          <calcite-menu-item
+            text="Esri.com"
+            icon-end="launch"
+            href="https://esri.com"
+            target="_blank"
+          ></calcite-menu-item>
+        </calcite-menu>
+        <calcite-notice open slot="footer" width="full" scale="s">
+          <span slot="title">Note</span>
+          <span slot="message"
+            >This is a demonstration application showcasing platform functionality. While Esri strives to ensure the
+            sample is accurate, it may not reflect implementation behavior in certain environments.</span
+          >
+        </calcite-notice>
+      </calcite-panel>
+    </calcite-sheet>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
