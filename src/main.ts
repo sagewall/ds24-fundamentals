@@ -1,4 +1,4 @@
-import Map from "@arcgis/core/Map";
+import WebMap from "@arcgis/core/WebMap";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapView from "@arcgis/core/views/MapView";
 import LayerList from "@arcgis/core/widgets/LayerList";
@@ -11,22 +11,10 @@ defineCustomElements(window, {
 
 setUp();
 
-const layerUrls = [
-  "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NDGD_SmokeForecast_v1/FeatureServer/0",
-  "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/MODIS_Thermal_v1/FeatureServer/0",
-  "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/USA_Wildfires_v1/FeatureServer/1",
-  "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/USA_Wildfires_v1/FeatureServer/0",
-];
-
-const layers = layerUrls.map((url) => {
-  return new FeatureLayer({
-    url,
-  });
-});
-
-const map = new Map({
-  basemap: "topo-vector",
-  layers,
+const map = new WebMap({
+  portalItem: {
+    id: "bbf8d7ab9d0e45798fc186b7ceb9b3ed",
+  },
 });
 
 const view = new MapView({
