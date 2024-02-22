@@ -29,10 +29,6 @@ const layerList = new LayerList({
   container: "layer-list-block",
   selectionMode: "multiple",
   view,
-  visibleElements: {
-    collapseButton: true,
-    heading: true,
-  },
 });
 
 view.watch("stationary", (value) => {
