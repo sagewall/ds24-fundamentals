@@ -15,15 +15,13 @@ setUp();
 
 const map = new WebMap({
   portalItem: {
-    id: "bbf8d7ab9d0e45798fc186b7ceb9b3ed",
+    id: "41281c51f9de45edaf1c8ed44bb10e30",
   },
 });
 
 const view = new MapView({
   map,
-  center: [-105, 39],
   container: "viewDiv",
-  zoom: 5,
 });
 
 const layerList = new LayerList({
@@ -43,9 +41,9 @@ view.watch("stationary", (value) => {
       return;
     }
 
-    zoomChip.innerHTML = `${view.zoom.toFixed(0)}`;
-    latitudeChip.innerHTML = `${view.center.latitude.toFixed(3)}`;
-    longitudeChip.innerHTML = `${view.center.longitude.toFixed(3)}`;
+    zoomChip.innerHTML = `${view.zoom?.toFixed(0)}`;
+    latitudeChip.innerHTML = `${view.center?.latitude.toFixed(3)}`;
+    longitudeChip.innerHTML = `${view.center?.longitude.toFixed(3)}`;
   }
 });
 
@@ -60,7 +58,7 @@ reactiveUtils.watch(
   (ready) => {
     const readyChip = document.querySelector("#ready-chip") as HTMLCalciteChipElement;
     if (readyChip) {
-      readyChip.icon = ready ? "check-circle" : "circle";
+      readyChip.icon = ready ? "check-circle" : "x-circle";
       readyChip.style.setProperty(
         "--calcite-ui-icon-color",
         ready ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
@@ -77,7 +75,7 @@ reactiveUtils.watch(
   (stationary) => {
     const stationaryChip = document.querySelector("#stationary-chip") as HTMLCalciteChipElement;
     if (stationaryChip) {
-      stationaryChip.icon = stationary ? "check-circle" : "circle";
+      stationaryChip.icon = stationary ? "check-circle" : "x-circle";
       stationaryChip.style.setProperty(
         "--calcite-ui-icon-color",
         stationary ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
@@ -94,7 +92,7 @@ reactiveUtils.watch(
   (updating) => {
     const updatingChip = document.querySelector("#updating-chip") as HTMLCalciteChipElement;
     if (updatingChip) {
-      updatingChip.icon = updating ? "circle" : "check-circle";
+      updatingChip.icon = !updating ? "check-circle" : "x-circle";
       updatingChip.style.setProperty(
         "--calcite-ui-icon-color",
         !updating ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
