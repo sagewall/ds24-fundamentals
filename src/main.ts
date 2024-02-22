@@ -4,6 +4,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapView from "@arcgis/core/views/MapView";
 import LayerList from "@arcgis/core/widgets/LayerList";
 import { defineCustomElements } from "@esri/calcite-components/dist/loader";
+import ListItem from "@arcgis/core/widgets/LayerList/ListItem";
 import "./style.css";
 
 defineCustomElements(window, {
@@ -33,36 +34,47 @@ const layerList = new LayerList({
 
 view.watch("stationary", (value) => {
   if (value === true) {
-    document.querySelector("#zoom-chip")!.innerHTML = `${view.zoom.toFixed(0)}`;
-    document.querySelector("#latitude-chip")!.innerHTML = `${view.center.latitude.toFixed(3)}`;
-    document.querySelector("#longitude-chip")!.innerHTML = `${view.center.longitude.toFixed(3)}`;
+    const zoomChip = document.querySelector("#zoom-chip") as HTMLCalciteChipElement;
+    const latitudeChip = document.querySelector("#latitude-chip") as HTMLCalciteChipElement;
+    const longitudeChip = document.querySelector("#longitude-chip") as HTMLCalciteChipElement;
+
+    if (!zoomChip || !latitudeChip || !longitudeChip) {
+      console.warn("Required elements not found");
+      return;
+    }
+
+    zoomChip.innerHTML = `${view.zoom.toFixed(0)}`;
+    latitudeChip.innerHTML = `${view.center.latitude.toFixed(3)}`;
+    longitudeChip.innerHTML = `${view.center.longitude.toFixed(3)}`;
   }
 });
 
+function applyFeatureEffect(item: ListItem, effect: string) {
+  const { layer } = item;
+  if (layer instanceof FeatureLayer) {
+    layer.effect = effect;
+  }
+}
+
 layerList.selectedItems.on("change", (event) => {
   const { removed, added } = event;
-  removed.forEach((item) => {
-    const { layer } = item;
-    if (layer instanceof FeatureLayer) {
-      layer.effect = "none";
-    }
-  });
-  added.forEach((item) => {
-    const { layer } = item;
-    if (layer instanceof FeatureLayer) {
-      layer.effect = "drop-shadow(2px, 2px, 3px) saturate(300%)";
-    }
-  });
+  removed.forEach((item) => applyFeatureEffect(item, "none"));
+  added.forEach((item) => applyFeatureEffect(item, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
 });
 
-view.when(() => {
+view.when(async () => {
   const whenChip = document.querySelector("#when-chip") as HTMLCalciteChipElement;
-  whenChip.icon = "check-circle";
-
-  console.log("view.when() has resolved");
   const loadedLayersList = document.querySelector("#loaded-layers-list") as HTMLCalciteListElement;
 
-  view.map.allLayers.forEach(async (layer) => {
+  if (!whenChip || !loadedLayersList) {
+    console.warn("Required elements not found");
+    return;
+  }
+
+  whenChip.icon = "check-circle";
+  console.log("view.when() has resolved");
+
+  const loadPromises = view.map.allLayers.map(async (layer) => {
     await layer.load();
     console.log(`${layer.title} has loaded`);
     const listItem = document.createElement("calcite-list-item");
@@ -70,14 +82,20 @@ view.when(() => {
     listItem.value = `${layer.title} has loaded`;
     loadedLayersList.appendChild(listItem);
   });
+
+  await Promise.all(loadPromises);
 });
 
 reactiveUtils.watch(
   () => view.stationary,
   (stationary) => {
     const stationaryChip = document.querySelector("#stationary-chip") as HTMLCalciteChipElement;
-    stationaryChip.icon = stationary ? "check-circle" : "circle";
-    console.log(`stationary is ${stationary ? true : false}`);
+    if (stationaryChip) {
+      stationaryChip.icon = stationary ? "check-circle" : "circle";
+      console.log(`stationary is ${stationary ? true : false}`);
+    } else {
+      console.warn('Element with id "stationary-chip" not found');
+    }
   },
 );
 
@@ -85,8 +103,12 @@ reactiveUtils.watch(
   () => view.ready,
   (ready) => {
     const readyChip = document.querySelector("#ready-chip") as HTMLCalciteChipElement;
-    readyChip.icon = ready ? "check-circle" : "circle";
-    console.log(`ready is ${ready ? true : false}`);
+    if (readyChip) {
+      readyChip.icon = ready ? "check-circle" : "circle";
+      console.log(`ready is ${ready ? true : false}`);
+    } else {
+      console.warn('Element with id "ready-chip" not found');
+    }
   },
 );
 
@@ -94,27 +116,29 @@ reactiveUtils.watch(
   () => view.updating,
   (updating) => {
     const updatingChip = document.querySelector("#updating-chip") as HTMLCalciteChipElement;
-    updatingChip.icon = updating ? "circle" : "check-circle";
-    console.log(`updating is ${updating ? true : false}`);
+    if (updatingChip) {
+      updatingChip.icon = updating ? "circle" : "check-circle";
+      console.log(`updating is ${updating}`);
+    } else {
+      console.warn('Element with id "updating-chip" not found');
+    }
   },
 );
 
 reactiveUtils.watch(
-  () =>
-    view.map.allLayers.map((layer) => {
-      document.querySelector("#visible-layers-list")!.innerHTML = "";
-      if (layer.visible) {
-        return layer.title;
-      }
-    }),
+  () => view.map.allLayers.filter((layer) => layer.visible).map((layer) => layer.title),
   (titles) => {
+    const visibleLayersList = document.querySelector("#visible-layers-list");
+    if (!visibleLayersList) {
+      console.warn('Element with id "visible-layers-list" not found');
+      return;
+    }
+    visibleLayersList.innerHTML = "";
     titles.forEach((title) => {
-      if (title) {
-        const listItem = document.createElement("calcite-list-item");
-        listItem.label = title;
-        listItem.value = title;
-        document.querySelector("#visible-layers-list")!.appendChild(listItem);
-      }
+      const listItem = document.createElement("calcite-list-item");
+      listItem.label = title;
+      listItem.value = title;
+      visibleLayersList.appendChild(listItem);
     });
   },
 );
