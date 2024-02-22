@@ -78,19 +78,6 @@ calcite-meter {
   margin: 1rem;
 }
 
-@media screen and (max-width: 800px) {
-  .grid-container {
-    grid-template-columns: 1fr;
-    grid-template-areas: "panel-start" "panel-info" "panel-info-2" "panel-map";
-  }
-  .panel-start {
-    max-height: 40vh;
-  }
-  .panel-map {
-    height: 40vh;
-  }
-}
-
 calcite-panel {
   border-block-start: 0;
 }
@@ -105,4 +92,21 @@ calcite-label:last-of-type {
 
 calcite-list-item calcite-chip {
   margin-inline-end: 0.5rem;
+}
+
+calcite-panel.panel-info-2 calcite-chip {
+  --calcite-ui-icon-color: var(--calcite-color-status-danger);
+}
+
+@media screen and (max-width: 800px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    grid-template-areas: "panel-start" "panel-info" "panel-info-2" "panel-map";
+  }
+  .panel-start {
+    max-height: 40vh;
+  }
+  .panel-map {
+    height: 40vh;
+  }
 }

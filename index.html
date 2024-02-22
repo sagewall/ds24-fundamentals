@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/esri.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>Let's make a map!</title>
   </head>
   <body>
     <calcite-shell>
@@ -14,7 +14,7 @@
           icon="viewshed"
           alt="Application logo"
           slot="logo"
-          heading="Let's make a map"
+          heading="ArcGIS Maps SDK for JavaScript, Programming Patterns and API Fundamentals"
           description="Esri Developer Summit 2024"
         ></calcite-navigation-logo>
         <calcite-action-pad layout="horizontal" expand-disabled slot="content-end">
@@ -31,7 +31,7 @@
           <calcite-panel class="panel-map" heading="Map Panel">
             <div id="viewDiv"></div>
           </calcite-panel>
-          <calcite-panel class="panel-info" heading="View">
+          <calcite-panel class="panel-info" heading="MapView zoom and center" collapsible>
             <calcite-list>
               <calcite-list-item label="zoom" value="zoom">
                 <calcite-chip id="zoom-chip" slot="content-end"></calcite-chip>
@@ -42,11 +42,12 @@
               <calcite-list-item label="longitude" value="longitude">
                 <calcite-chip id="longitude-chip" slot="content-end"></calcite-chip>
               </calcite-list-item>
+            </calcite-list>
+          </calcite-panel>
+          <calcite-panel class="panel-info-2" heading="MapView state" collapsible>
+            <calcite-list>
               <calcite-list-item label="ready is true" value="ready is true">
                 <calcite-chip id="ready-chip" slot="content-end" icon="circle"></calcite-chip>
-              </calcite-list-item>
-              <calcite-list-item label="when() has resolved" value="when() has resolved">
-                <calcite-chip id="when-chip" slot="content-end" icon="circle"></calcite-chip>
               </calcite-list-item>
               <calcite-list-item label="stationary is true" value="stationary is true">
                 <calcite-chip id="stationary-chip" slot="content-end" icon="circle"></calcite-chip>
@@ -56,25 +57,12 @@
               </calcite-list-item>
             </calcite-list>
           </calcite-panel>
-          <calcite-panel class="panel-info-2" heading="Loaded Layers">
-            <calcite-list id="loaded-layers-list"></calcite-list>
-          </calcite-panel>
-          <calcite-panel class="panel-start" heading="Dashboard options">
-            <calcite-action
-              id="toggle-instructions"
-              text="Instructions"
-              icon="lightbulb"
-              slot="header-actions-end"
-            ></calcite-action>
-            <calcite-tooltip placement="bottom" reference-element="toggle-instructions" slot="header-actions-end"
-              >A quick get-going hint about this demo</calcite-tooltip
-            >
-
+          <calcite-panel class="panel-start" heading="Layers">
             <calcite-block
               id="layer-list-block"
               open
               collapsible
-              heading="Layer List"
+              heading="LayerList widget"
               description="Select a layer to apply a layer effect"
             >
             </calcite-block>
@@ -83,7 +71,7 @@
               open
               collapsible
               heading="Visible Layers"
-              description="These layers are currently visible in the map"
+              description="Currently visible map layers are listed below. To change a layer's visibility, click its corresponding visibility button in the LayerList widget above."
             >
               <calcite-list id="visible-layers-list"></calcite-list>
             </calcite-block>

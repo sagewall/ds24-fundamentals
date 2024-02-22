@@ -1,10 +1,10 @@
 import WebMap from "@arcgis/core/WebMap";
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapView from "@arcgis/core/views/MapView";
 import LayerList from "@arcgis/core/widgets/LayerList";
+import type ListItem from "@arcgis/core/widgets/LayerList/ListItem";
 import { defineCustomElements } from "@esri/calcite-components/dist/loader";
-import ListItem from "@arcgis/core/widgets/LayerList/ListItem";
 import "./style.css";
 
 defineCustomElements(window, {
@@ -23,7 +23,7 @@ const view = new MapView({
   map,
   center: [-105, 39],
   container: "viewDiv",
-  zoom: 7,
+  zoom: 5,
 });
 
 const layerList = new LayerList({
@@ -49,55 +49,11 @@ view.watch("stationary", (value) => {
   }
 });
 
-function applyFeatureEffect(item: ListItem, effect: string) {
-  const { layer } = item;
-  if (layer instanceof FeatureLayer) {
-    layer.effect = effect;
-  }
-}
-
 layerList.selectedItems.on("change", (event) => {
   const { removed, added } = event;
   removed.forEach((item) => applyFeatureEffect(item, "none"));
   added.forEach((item) => applyFeatureEffect(item, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
 });
-
-view.when(async () => {
-  const whenChip = document.querySelector("#when-chip") as HTMLCalciteChipElement;
-  const loadedLayersList = document.querySelector("#loaded-layers-list") as HTMLCalciteListElement;
-
-  if (!whenChip || !loadedLayersList) {
-    console.warn("Required elements not found");
-    return;
-  }
-
-  whenChip.icon = "check-circle";
-  console.log("view.when() has resolved");
-
-  const loadPromises = view.map.allLayers.map(async (layer) => {
-    await layer.load();
-    console.log(`${layer.title} has loaded`);
-    const listItem = document.createElement("calcite-list-item");
-    listItem.label = `${layer.title} has loaded`;
-    listItem.value = `${layer.title} has loaded`;
-    loadedLayersList.appendChild(listItem);
-  });
-
-  await Promise.all(loadPromises);
-});
-
-reactiveUtils.watch(
-  () => view.stationary,
-  (stationary) => {
-    const stationaryChip = document.querySelector("#stationary-chip") as HTMLCalciteChipElement;
-    if (stationaryChip) {
-      stationaryChip.icon = stationary ? "check-circle" : "circle";
-      console.log(`stationary is ${stationary ? true : false}`);
-    } else {
-      console.warn('Element with id "stationary-chip" not found');
-    }
-  },
-);
 
 reactiveUtils.watch(
   () => view.ready,
@@ -105,9 +61,30 @@ reactiveUtils.watch(
     const readyChip = document.querySelector("#ready-chip") as HTMLCalciteChipElement;
     if (readyChip) {
       readyChip.icon = ready ? "check-circle" : "circle";
-      console.log(`ready is ${ready ? true : false}`);
+      readyChip.style.setProperty(
+        "--calcite-ui-icon-color",
+        ready ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
+      );
+      console.log(`ready is ${ready}`);
     } else {
       console.warn('Element with id "ready-chip" not found');
+    }
+  },
+);
+
+reactiveUtils.watch(
+  () => view.stationary,
+  (stationary) => {
+    const stationaryChip = document.querySelector("#stationary-chip") as HTMLCalciteChipElement;
+    if (stationaryChip) {
+      stationaryChip.icon = stationary ? "check-circle" : "circle";
+      stationaryChip.style.setProperty(
+        "--calcite-ui-icon-color",
+        stationary ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
+      );
+      console.log(`stationary is ${stationary}`);
+    } else {
+      console.warn('Element with id "stationary-chip" not found');
     }
   },
 );
@@ -118,6 +95,10 @@ reactiveUtils.watch(
     const updatingChip = document.querySelector("#updating-chip") as HTMLCalciteChipElement;
     if (updatingChip) {
       updatingChip.icon = updating ? "circle" : "check-circle";
+      updatingChip.style.setProperty(
+        "--calcite-ui-icon-color",
+        !updating ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
+      );
       console.log(`updating is ${updating}`);
     } else {
       console.warn('Element with id "updating-chip" not found');
@@ -126,7 +107,11 @@ reactiveUtils.watch(
 );
 
 reactiveUtils.watch(
-  () => view.map.allLayers.filter((layer) => layer.visible).map((layer) => layer.title),
+  () =>
+    view.map.layers
+      .filter((layer) => layer.visible)
+      .map((layer) => layer.title)
+      .reverse(),
   (titles) => {
     const visibleLayersList = document.querySelector("#visible-layers-list");
     if (!visibleLayersList) {
@@ -143,7 +128,22 @@ reactiveUtils.watch(
   },
 );
 
-// Set up the user interface
+/**
+ * A function to apply an effect to a list item layer if it is a feature layer
+ *
+ * @param listItem
+ * @param effect
+ */
+function applyFeatureEffect(listItem: ListItem, effect: string) {
+  const { layer } = listItem;
+  if (layer.type === "feature") {
+    (layer as FeatureLayer).effect = effect;
+  }
+}
+
+/**
+ * A function to set up the event listeners for the app
+ */
 function setUp() {
   const toggleModalEl = document.getElementById("toggle-modal") as HTMLCalciteActionElement;
   const navigationEl = document.getElementById("nav") as HTMLCalciteNavigationElement;
