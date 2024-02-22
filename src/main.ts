@@ -35,10 +35,8 @@ const layerList = new LayerList({
   },
 });
 
-view.watch("stationary", (newValue, oldValue) => {
-  console.log(`the stationary property changed from ${oldValue}, to ${newValue}`);
-
-  if (newValue === true) {
+view.watch("stationary", (value) => {
+  if (value === true) {
     document.querySelector("#zoom-chip")!.innerHTML = `${view.zoom.toFixed(0)}`;
     document.querySelector("#latitude-chip")!.innerHTML = `${view.center.latitude.toFixed(3)}`;
     document.querySelector("#longitude-chip")!.innerHTML = `${view.center.longitude.toFixed(3)}`;
@@ -60,6 +58,35 @@ layerList.selectedItems.on("change", (event) => {
     }
   });
 });
+
+view.when(() => {
+  console.log("view.when() has resolved");
+  view.map.layers.forEach(async (layer) => {
+    await layer.load();
+    console.log(`${layer.title} has loaded`);
+  });
+});
+
+reactiveUtils.watch(
+  () => view.stationary,
+  (stationary) => {
+    console.log(`stationary is ${stationary ? true : false}`);
+  },
+);
+
+reactiveUtils.watch(
+  () => view.ready,
+  (ready) => {
+    console.log(`ready is ${ready ? true : false}`);
+  },
+);
+
+reactiveUtils.watch(
+  () => view.updating,
+  (updating) => {
+    console.log(`updating is ${updating ? true : false}`);
+  },
+);
 
 reactiveUtils.watch(
   () =>
