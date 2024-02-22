@@ -4,15 +4,10 @@
 html,
 body,
 #viewDiv {
-  padding: 0;
-  margin: 0;
   height: 100%;
   width: 100%;
-}
-
-calcite-chip {
-  margin: 10px;
-  min-width: 80px;
+  margin: 0;
+  padding: 0;
 }
 
 calcite-menu-item {
@@ -43,4 +38,71 @@ calcite-action-pad {
 
 #modal calcite-notice {
   margin-bottom: 1.25rem;
+}
+
+.grid-container {
+  margin: 2rem;
+  height: 100%;
+  max-height: calc(100% - 64px);
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-columns: minmax(18rem, 0.5fr) 1fr 1fr;
+  grid-template-rows: 0.4fr 1fr 1fr;
+  gap: 2rem 2rem;
+  grid-template-areas:
+    "panel-start panel-info panel-info-2"
+    "panel-start panel-map panel-map"
+    "panel-start panel-map panel-map";
+}
+.panel-map {
+  grid-area: panel-map;
+}
+
+.panel-info {
+  grid-area: panel-info;
+}
+
+.panel-info-2 {
+  grid-area: panel-info-2;
+}
+
+.panel-start {
+  grid-area: panel-start;
+}
+
+.grid-container calcite-panel {
+  box-shadow: var(--calcite-shadow-sm);
+}
+
+calcite-meter {
+  margin: 1rem;
+}
+
+@media screen and (max-width: 800px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    grid-template-areas: "panel-start" "panel-info" "panel-info-2" "panel-map";
+  }
+  .panel-start {
+    max-height: 40vh;
+  }
+  .panel-map {
+    height: 40vh;
+  }
+}
+
+calcite-panel {
+  border-block-start: 0;
+}
+
+calcite-shell {
+  background-color: var(--calcite-color-background);
+}
+
+calcite-label:last-of-type {
+  --calcite-label-margin-bottom: 0;
+}
+
+calcite-list-item calcite-chip {
+  margin-inline-end: 0.5rem;
 }

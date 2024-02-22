@@ -1,10 +1,10 @@
 import WebMap from "@arcgis/core/WebMap";
+import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapView from "@arcgis/core/views/MapView";
 import LayerList from "@arcgis/core/widgets/LayerList";
 import { defineCustomElements } from "@esri/calcite-components/dist/loader";
 import "./style.css";
-import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
 
 defineCustomElements(window, {
   resourcesUrl: "https://js.arcgis.com/calcite-components/2.4.0/assets",
@@ -26,7 +26,7 @@ const view = new MapView({
 });
 
 const layerList = new LayerList({
-  container: "layer-list-panel",
+  container: "layer-list-block",
   selectionMode: "multiple",
   view,
   visibleElements: {
@@ -60,16 +60,27 @@ layerList.selectedItems.on("change", (event) => {
 });
 
 view.when(() => {
+  const whenChip = document.querySelector("#when-chip") as HTMLCalciteChipElement;
+  whenChip.icon = "check-circle";
+
   console.log("view.when() has resolved");
-  view.map.layers.forEach(async (layer) => {
+  const loadedLayersList = document.querySelector("#loaded-layers-list") as HTMLCalciteListElement;
+
+  view.map.allLayers.forEach(async (layer) => {
     await layer.load();
     console.log(`${layer.title} has loaded`);
+    const listItem = document.createElement("calcite-list-item");
+    listItem.label = `${layer.title} has loaded`;
+    listItem.value = `${layer.title} has loaded`;
+    loadedLayersList.appendChild(listItem);
   });
 });
 
 reactiveUtils.watch(
   () => view.stationary,
   (stationary) => {
+    const stationaryChip = document.querySelector("#stationary-chip") as HTMLCalciteChipElement;
+    stationaryChip.icon = stationary ? "check-circle" : "circle";
     console.log(`stationary is ${stationary ? true : false}`);
   },
 );
@@ -77,6 +88,8 @@ reactiveUtils.watch(
 reactiveUtils.watch(
   () => view.ready,
   (ready) => {
+    const readyChip = document.querySelector("#ready-chip") as HTMLCalciteChipElement;
+    readyChip.icon = ready ? "check-circle" : "circle";
     console.log(`ready is ${ready ? true : false}`);
   },
 );
@@ -84,13 +97,15 @@ reactiveUtils.watch(
 reactiveUtils.watch(
   () => view.updating,
   (updating) => {
+    const updatingChip = document.querySelector("#updating-chip") as HTMLCalciteChipElement;
+    updatingChip.icon = updating ? "circle" : "check-circle";
     console.log(`updating is ${updating ? true : false}`);
   },
 );
 
 reactiveUtils.watch(
   () =>
-    view.map.layers.map((layer) => {
+    view.map.allLayers.map((layer) => {
       document.querySelector("#visible-layers-list")!.innerHTML = "";
       if (layer.visible) {
         return layer.title;

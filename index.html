@@ -7,14 +7,14 @@
     <title>Vite + TS</title>
   </head>
   <body>
-    <calcite-shell content-behind>
+    <calcite-shell>
       <calcite-navigation navigation-action slot="header" id="nav">
         <calcite-navigation-logo
           href=""
-          icon="image-layer"
+          icon="viewshed"
           alt="Application logo"
           slot="logo"
-          heading="ArcGIS Maps SDK for JavaScript: Programming Patters and API Fundamentals"
+          heading="Let's make a map"
           description="Esri Developer Summit 2024"
         ></calcite-navigation-logo>
         <calcite-action-pad layout="horizontal" expand-disabled slot="content-end">
@@ -26,32 +26,58 @@
         >
       </calcite-navigation>
 
-      <calcite-shell-panel slot="panel-end" display-mode="float">
-        <calcite-panel id="view-properties-panel" heading="Current view property values" collapsible>
-          <calcite-label id="zoom-label" layout="inline">
-            <calcite-chip id="zoom-chip" value="unknown" kind="brand"></calcite-chip>
-            Zoom
-          </calcite-label>
+      <calcite-panel>
+        <div class="grid-container">
+          <calcite-panel class="panel-map" heading="Map Panel">
+            <div id="viewDiv"></div>
+          </calcite-panel>
+          <calcite-panel class="panel-info" heading="View">
+            <calcite-list>
+              <calcite-list-item label="zoom" value="zoom">
+                <calcite-chip id="zoom-chip" slot="content-end"></calcite-chip>
+              </calcite-list-item>
+              <calcite-list-item label="latitude" value="latitude">
+                <calcite-chip id="latitude-chip" slot="content-end"></calcite-chip>
+              </calcite-list-item>
+              <calcite-list-item label="longitude" value="longitude">
+                <calcite-chip id="longitude-chip" slot="content-end"></calcite-chip>
+              </calcite-list-item>
+              <calcite-list-item label="ready is true" value="ready is true">
+                <calcite-chip id="ready-chip" slot="content-end" icon="circle"></calcite-chip>
+              </calcite-list-item>
+              <calcite-list-item label="when() has resolved" value="when() has resolved">
+                <calcite-chip id="when-chip" slot="content-end" icon="circle"></calcite-chip>
+              </calcite-list-item>
+              <calcite-list-item label="stationary is true" value="stationary is true">
+                <calcite-chip id="stationary-chip" slot="content-end" icon="circle"></calcite-chip>
+              </calcite-list-item>
+              <calcite-list-item label="updating is false" value="updating is is false">
+                <calcite-chip id="updating-chip" slot="content-end" icon="circle"></calcite-chip>
+              </calcite-list-item>
+            </calcite-list>
+          </calcite-panel>
+          <calcite-panel class="panel-info-2" heading="Loaded Layers">
+            <calcite-list id="loaded-layers-list"></calcite-list>
+          </calcite-panel>
+          <calcite-panel class="panel-start" heading="Dashboard options">
+            <calcite-action
+              id="toggle-instructions"
+              text="Instructions"
+              icon="lightbulb"
+              slot="header-actions-end"
+            ></calcite-action>
+            <calcite-tooltip placement="bottom" reference-element="toggle-instructions" slot="header-actions-end"
+              >A quick get-going hint about this demo</calcite-tooltip
+            >
 
-          <calcite-label id="latitude-label" layout="inline">
-            <calcite-chip id="latitude-chip" value="unknown" kind="brand"></calcite-chip>
-            Latitude
-          </calcite-label>
+            <calcite-block id="layer-list-block" open collapsible heading="Layer List"> </calcite-block>
 
-          <calcite-label id="longitude-label" layout="inline">
-            <calcite-chip id="longitude-chip" value="unknown" kind="brand"></calcite-chip>
-            Longitude
-          </calcite-label>
-        </calcite-panel>
-
-        <calcite-panel id="layer-list-panel"> </calcite-panel>
-
-        <calcite-panel id="visible-layers-panel" heading="Current visible layers" collapsible>
-          <calcite-list id="visible-layers-list"></calcite-list>
-        </calcite-panel>
-      </calcite-shell-panel>
-
-      <div id="viewDiv"></div>
+            <calcite-block open collapsible heading="Visible Layers">
+              <calcite-list id="visible-layers-list"></calcite-list>
+            </calcite-block>
+          </calcite-panel>
+        </div>
+      </calcite-panel>
     </calcite-shell>
 
     <!-- Demo template interactive elements -->
@@ -60,45 +86,26 @@
       <div slot="content">
         <calcite-notice open>
           <span slot="title"
-            >This demonstration application is a companion resource to the "ArcGIS Maps SDK for JavaScript: Programming
+            >This demonstration application is a companion resource to the "ArcGIS Maps SDK for Javascript: Programming
             Patterns and API Fundamentals" session at Esri Developer Summit 2024.
           </span>
         </calcite-notice>
-        This example illustrates how to listen to collection events in the ArcGIS API for JavaScript.
-        <calcite-link target="_blank" href=""> a great topic</calcite-link>.
+        This example illustrates how to display a web map to a web page.
         <ul>
-          <li>Listening to collection events</li>
-          <li>Map</li>
-          <li>MapView</li>
-          <li>LayerList widget</li>
+          <li>Add Modules</li>
+          <li>Display a web map</li>
         </ul>
-        Learn more in the documentation
-        <calcite-link
-          target="_blank"
-          href="https://developers.arcgis.com/javascript/latest/api-reference/esri-core-Collection.html"
-          >Collection</calcite-link
-        >.
-        <calcite-link target="_blank" href="https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html"
-          >Map</calcite-link
-        >.
-        <calcite-link
-          target="_blank"
-          href="https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html"
-          >MapView</calcite-link
-        >.
-        <calcite-link
-          target="_blank"
-          href="https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-LayerList.html"
-          >LayerList</calcite-link
+        Learn more and follow along in this
+        <calcite-link target="https://developers.arcgis.com/javascript/latest/tutorials/display-a-web-map/" href=""
+          >tutorial</calcite-link
         >.
         <hr />
-        <calcite-link target="_blank" href="">Application source code</calcite-link>
-        is available in the
+        <calcite-link target="_blank" href="">Application source code</calcite-link> is available in the
         <calcite-link target="_blank" href="https://github.com/EsriDevEvents/"
           >Esri Developer Events GitHub organization</calcite-link
         >.
         <hr />
-        Map data is sourced from the
+        <calcite-link target="_blank" href="">Map data </calcite-link> is sourced from Esri Data and Maps /
         <calcite-link target="_blank" href="https://livingatlas.arcgis.com/en/home/"
           >ArcGIS Living Atlas of the World</calcite-link
         >.
