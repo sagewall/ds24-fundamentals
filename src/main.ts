@@ -49,6 +49,22 @@ layerList.selectedItems.on("change", (event) => {
   added.forEach((listItem) => applyFeatureEffect(listItem, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
 });
 
+// reactiveUtils.watch(
+//   () => layerList.selectedItems.toArray(),
+//   (newSelectedItems, oldSelectedItems) => {
+//     const added = newSelectedItems.filter((item) => !oldSelectedItems.includes(item));
+//     const removed = oldSelectedItems.filter((item) => !newSelectedItems.includes(item));
+
+//     const oldCommon = oldSelectedItems.filter((item) => newSelectedItems.includes(item));
+//     const newCommon = newSelectedItems.filter((item) => oldSelectedItems.includes(item));
+//     const moved = oldCommon.filter((item, index) => item !== newCommon[index]);
+
+//     console.log("added", added);
+//     console.log("removed", removed);
+//     console.log("moved", moved);
+//   },
+// );
+
 reactiveUtils.watch(
   () => view.ready,
   (ready) => {
