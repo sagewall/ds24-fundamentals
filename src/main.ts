@@ -43,11 +43,11 @@ const layerList = new LayerList({
   view,
 });
 
-layerList.selectedItems.on("change", (event) => {
-  const { removed, added } = event;
-  removed.forEach((listItem) => applyFeatureEffect(listItem, "none"));
-  added.forEach((listItem) => applyFeatureEffect(listItem, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
-});
+// layerList.selectedItems.on("change", (event) => {
+//   const { removed, added } = event;
+//   removed.forEach((listItem) => applyFeatureEffect(listItem, "none"));
+//   added.forEach((listItem) => applyFeatureEffect(listItem, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
+// });
 
 // reactiveUtils.watch(
 //   () => layerList.selectedItems.toArray(),
@@ -64,6 +64,16 @@ layerList.selectedItems.on("change", (event) => {
 //     console.log("moved", moved);
 //   },
 // );
+
+reactiveUtils.watch(
+  () => layerList.selectedItems.toArray(),
+  (newSelectedItems, oldSelectedItems) => {
+    const added = newSelectedItems.filter((item) => !oldSelectedItems.includes(item));
+    const removed = oldSelectedItems.filter((item) => !newSelectedItems.includes(item));
+    removed.forEach((listItem) => applyFeatureEffect(listItem, "none"));
+    added.forEach((listItem) => applyFeatureEffect(listItem, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
+  },
+);
 
 reactiveUtils.watch(
   () => view.ready,
