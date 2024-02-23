@@ -24,7 +24,7 @@ const updatingIcon = document.querySelector("#updating-icon") as HTMLCalciteIcon
 const visibleLayersList = document.querySelector("#visible-layers-list") as HTMLCalciteListElement;
 const zoomChip = document.querySelector("#zoom-chip") as HTMLCalciteChipElement;
 
-setUp();
+setUpEventListeners();
 
 const map = new WebMap({
   portalItem: {
@@ -60,6 +60,7 @@ reactiveUtils.watch(
     console.log(`ready is ${ready}`);
     updateIcon(readyIcon, ready);
   },
+  { initial: true },
 );
 
 reactiveUtils.watch(
@@ -77,6 +78,7 @@ reactiveUtils.watch(
     latitudeChip.innerHTML = `${view.center?.latitude.toFixed(3)}`;
     longitudeChip.innerHTML = `${view.center?.longitude.toFixed(3)}`;
   },
+  { initial: true },
 );
 
 reactiveUtils.watch(
@@ -90,6 +92,7 @@ reactiveUtils.watch(
     console.log(`updating is ${updating}`);
     updateIcon(updatingIcon, updating, true);
   },
+  { initial: true },
 );
 
 reactiveUtils.watch(
@@ -114,24 +117,6 @@ reactiveUtils.watch(
 );
 
 /**
- * A function to update the icon and text label of a calcite icon based on a boolean value
- *
- * @param calciteIcon
- * @parm falseIsExpected
- * @param value
- *
- */
-function updateIcon(calciteIcon: HTMLCalciteIconElement, value: boolean, falseIsExpected: boolean = false) {
-  const success = falseIsExpected ? !value : value;
-  calciteIcon.icon = success ? "check-circle" : "x-circle";
-  calciteIcon.textLabel = value?.toString();
-  calciteIcon.style.setProperty(
-    "--calcite-ui-icon-color",
-    success ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
-  );
-}
-
-/**
  * A function to apply an effect to a list item layer if it is a feature layer
  *
  * @param listItem
@@ -147,11 +132,10 @@ function applyFeatureEffect(listItem: ListItem, effect: string) {
 /**
  * A function to set up the event listeners for the app
  */
-function setUp() {
-  toggleModalEl?.addEventListener("click", () => handleModalChange());
+function setUpEventListeners() {
   navigationEl?.addEventListener("calciteNavigationActionSelect", () => handleSheetOpen());
-
   panelEl?.addEventListener("calcitePanelClose", () => handlePanelClose());
+  toggleModalEl?.addEventListener("click", () => handleModalChange());
 
   function handleModalChange() {
     if (modalEl) {
@@ -167,4 +151,22 @@ function setUp() {
   function handlePanelClose() {
     sheetEl.open = false;
   }
+}
+
+/**
+ * A function to update the icon and text label of a calcite icon based on a boolean value
+ *
+ * @param calciteIcon
+ * @parm falseIsExpected
+ * @param value
+ *
+ */
+function updateIcon(calciteIcon: HTMLCalciteIconElement, value: boolean, falseIsExpected: boolean = false) {
+  const success = falseIsExpected ? !value : value;
+  calciteIcon.icon = success ? "check-circle" : "x-circle";
+  calciteIcon.textLabel = value?.toString();
+  calciteIcon.style.setProperty(
+    "--calcite-ui-icon-color",
+    success ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
+  );
 }
