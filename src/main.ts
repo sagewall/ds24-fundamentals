@@ -49,17 +49,18 @@ view.watch("stationary", (value) => {
 
 layerList.selectedItems.on("change", (event) => {
   const { removed, added } = event;
-  removed.forEach((item) => applyFeatureEffect(item, "none"));
-  added.forEach((item) => applyFeatureEffect(item, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
+  removed.forEach((listItem) => applyFeatureEffect(listItem, "none"));
+  added.forEach((listItem) => applyFeatureEffect(listItem, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
 });
 
 reactiveUtils.watch(
   () => view.ready,
   (ready) => {
-    const readyChip = document.querySelector("#ready-chip") as HTMLCalciteChipElement;
-    if (readyChip) {
-      readyChip.icon = ready ? "check-circle" : "x-circle";
-      readyChip.style.setProperty(
+    const readyIcon = document.querySelector("#ready-icon") as HTMLCalciteIconElement;
+    if (readyIcon) {
+      readyIcon.icon = ready ? "check-circle" : "x-circle";
+      readyIcon.textLabel = ready.toString();
+      readyIcon.style.setProperty(
         "--calcite-ui-icon-color",
         ready ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
       );
@@ -73,10 +74,11 @@ reactiveUtils.watch(
 reactiveUtils.watch(
   () => view.stationary,
   (stationary) => {
-    const stationaryChip = document.querySelector("#stationary-chip") as HTMLCalciteChipElement;
-    if (stationaryChip) {
-      stationaryChip.icon = stationary ? "check-circle" : "x-circle";
-      stationaryChip.style.setProperty(
+    const stationaryIcon = document.querySelector("#stationary-icon") as HTMLCalciteIconElement;
+    if (stationaryIcon) {
+      stationaryIcon.icon = stationary ? "check-circle" : "x-circle";
+      stationaryIcon.textLabel = stationary.toString();
+      stationaryIcon.style.setProperty(
         "--calcite-ui-icon-color",
         stationary ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
       );
@@ -90,10 +92,11 @@ reactiveUtils.watch(
 reactiveUtils.watch(
   () => view.updating,
   (updating) => {
-    const updatingChip = document.querySelector("#updating-chip") as HTMLCalciteChipElement;
-    if (updatingChip) {
-      updatingChip.icon = !updating ? "check-circle" : "x-circle";
-      updatingChip.style.setProperty(
+    const updatingIcon = document.querySelector("#updating-icon") as HTMLCalciteIconElement;
+    if (updatingIcon) {
+      updatingIcon.icon = !updating ? "check-circle" : "x-circle";
+      updatingIcon.textLabel = updating.toString();
+      updatingIcon.style.setProperty(
         "--calcite-ui-icon-color",
         !updating ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
       );

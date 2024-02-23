@@ -34,26 +34,31 @@
           <calcite-panel class="panel-info" heading="MapView zoom and center" collapsible>
             <calcite-list>
               <calcite-list-item label="zoom" value="zoom">
-                <calcite-chip id="zoom-chip" slot="content-end"></calcite-chip>
+                <calcite-chip id="zoom-chip" slot="content-end" kind="brand"></calcite-chip>
               </calcite-list-item>
               <calcite-list-item label="latitude" value="latitude">
-                <calcite-chip id="latitude-chip" slot="content-end"></calcite-chip>
+                <calcite-chip id="latitude-chip" slot="content-end" kind="brand"></calcite-chip>
               </calcite-list-item>
               <calcite-list-item label="longitude" value="longitude">
-                <calcite-chip id="longitude-chip" slot="content-end"></calcite-chip>
+                <calcite-chip id="longitude-chip" slot="content-end" kind="brand"></calcite-chip>
               </calcite-list-item>
             </calcite-list>
           </calcite-panel>
           <calcite-panel class="panel-info-2" heading="MapView state" collapsible>
             <calcite-list>
               <calcite-list-item label="ready is true" value="ready is true">
-                <calcite-chip id="ready-chip" slot="content-end" icon="x-circle"></calcite-chip>
+                <calcite-icon id="ready-icon" slot="content-start" icon="x-circle" text-label="false"></calcite-icon>
               </calcite-list-item>
               <calcite-list-item label="stationary is true" value="stationary is true">
-                <calcite-chip id="stationary-chip" slot="content-end" icon="x-circle"></calcite-chip>
+                <calcite-icon
+                  id="stationary-icon"
+                  slot="content-start"
+                  icon="x-circle"
+                  text-label="false"
+                ></calcite-icon>
               </calcite-list-item>
               <calcite-list-item label="updating is false" value="updating is is false">
-                <calcite-chip id="updating-chip" slot="content-end" icon="x-circle"></calcite-chip>
+                <calcite-icon id="updating-icon" slot="content-start" icon="x-circle" text-label="false"></calcite-icon>
               </calcite-list-item>
             </calcite-list>
           </calcite-panel>

@@ -94,7 +94,7 @@ calcite-list-item calcite-chip {
   margin-inline-end: 0.5rem;
 }
 
-calcite-panel.panel-info-2 calcite-chip {
+calcite-panel.panel-info-2 calcite-icon {
   --calcite-ui-icon-color: var(--calcite-color-status-danger);
 }
 
