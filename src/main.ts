@@ -11,6 +11,19 @@ defineCustomElements(window, {
   resourcesUrl: "https://js.arcgis.com/calcite-components/2.4.0/assets",
 });
 
+const latitudeChip = document.querySelector("#latitude-chip") as HTMLCalciteChipElement;
+const longitudeChip = document.querySelector("#longitude-chip") as HTMLCalciteChipElement;
+const modalEl = document.querySelector("#modal") as HTMLCalciteModalElement;
+const navigationEl = document.querySelector("#nav") as HTMLCalciteNavigationElement;
+const panelEl = document.querySelector("#sheet-panel") as HTMLCalcitePanelElement;
+const readyIcon = document.querySelector("#ready-icon") as HTMLCalciteIconElement;
+const sheetEl = document.querySelector("#sheet") as HTMLCalciteSheetElement;
+const stationaryIcon = document.querySelector("#stationary-icon") as HTMLCalciteIconElement;
+const toggleModalEl = document.querySelector("#toggle-modal") as HTMLCalciteActionElement;
+const updatingIcon = document.querySelector("#updating-icon") as HTMLCalciteIconElement;
+const visibleLayersList = document.querySelector("#visible-layers-list") as HTMLCalciteListElement;
+const zoomChip = document.querySelector("#zoom-chip") as HTMLCalciteChipElement;
+
 setUp();
 
 const map = new WebMap({
@@ -30,23 +43,6 @@ const layerList = new LayerList({
   view,
 });
 
-view.watch("stationary", (value) => {
-  if (value === true) {
-    const zoomChip = document.querySelector("#zoom-chip") as HTMLCalciteChipElement;
-    const latitudeChip = document.querySelector("#latitude-chip") as HTMLCalciteChipElement;
-    const longitudeChip = document.querySelector("#longitude-chip") as HTMLCalciteChipElement;
-
-    if (!zoomChip || !latitudeChip || !longitudeChip) {
-      console.warn("Required elements not found");
-      return;
-    }
-
-    zoomChip.innerHTML = `${view.zoom?.toFixed(0)}`;
-    latitudeChip.innerHTML = `${view.center?.latitude.toFixed(3)}`;
-    longitudeChip.innerHTML = `${view.center?.longitude.toFixed(3)}`;
-  }
-});
-
 layerList.selectedItems.on("change", (event) => {
   const { removed, added } = event;
   removed.forEach((listItem) => applyFeatureEffect(listItem, "none"));
@@ -56,54 +52,43 @@ layerList.selectedItems.on("change", (event) => {
 reactiveUtils.watch(
   () => view.ready,
   (ready) => {
-    const readyIcon = document.querySelector("#ready-icon") as HTMLCalciteIconElement;
-    if (readyIcon) {
-      readyIcon.icon = ready ? "check-circle" : "x-circle";
-      readyIcon.textLabel = ready.toString();
-      readyIcon.style.setProperty(
-        "--calcite-ui-icon-color",
-        ready ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
-      );
-      console.log(`ready is ${ready}`);
-    } else {
-      console.warn('Element with id "ready-chip" not found');
+    if (!readyIcon) {
+      console.warn("Required elements not found");
+      return;
     }
+
+    console.log(`ready is ${ready}`);
+    updateIcon(readyIcon, ready);
   },
 );
 
 reactiveUtils.watch(
   () => view.stationary,
   (stationary) => {
-    const stationaryIcon = document.querySelector("#stationary-icon") as HTMLCalciteIconElement;
-    if (stationaryIcon) {
-      stationaryIcon.icon = stationary ? "check-circle" : "x-circle";
-      stationaryIcon.textLabel = stationary.toString();
-      stationaryIcon.style.setProperty(
-        "--calcite-ui-icon-color",
-        stationary ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
-      );
-      console.log(`stationary is ${stationary}`);
-    } else {
-      console.warn('Element with id "stationary-chip" not found');
+    if (!latitudeChip || !longitudeChip || !stationaryIcon || !zoomChip) {
+      console.warn("Required elements not found");
+      return;
     }
+
+    console.log(`stationary is ${stationary}`);
+    updateIcon(stationaryIcon, stationary);
+
+    zoomChip.innerHTML = `${view.zoom?.toFixed(0)}`;
+    latitudeChip.innerHTML = `${view.center?.latitude.toFixed(3)}`;
+    longitudeChip.innerHTML = `${view.center?.longitude.toFixed(3)}`;
   },
 );
 
 reactiveUtils.watch(
   () => view.updating,
   (updating) => {
-    const updatingIcon = document.querySelector("#updating-icon") as HTMLCalciteIconElement;
-    if (updatingIcon) {
-      updatingIcon.icon = !updating ? "check-circle" : "x-circle";
-      updatingIcon.textLabel = updating.toString();
-      updatingIcon.style.setProperty(
-        "--calcite-ui-icon-color",
-        !updating ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
-      );
-      console.log(`updating is ${updating}`);
-    } else {
-      console.warn('Element with id "updating-chip" not found');
+    if (!updatingIcon) {
+      console.warn("Required elements not found");
+      return;
     }
+
+    console.log(`updating is ${updating}`);
+    updateIcon(updatingIcon, updating, true);
   },
 );
 
@@ -114,7 +99,6 @@ reactiveUtils.watch(
       .map((layer) => layer.title)
       .reverse(),
   (titles) => {
-    const visibleLayersList = document.querySelector("#visible-layers-list");
     if (!visibleLayersList) {
       console.warn('Element with id "visible-layers-list" not found');
       return;
@@ -128,6 +112,24 @@ reactiveUtils.watch(
     });
   },
 );
+
+/**
+ * A function to update the icon and text label of a calcite icon based on a boolean value
+ *
+ * @param calciteIcon
+ * @parm falseIsExpected
+ * @param value
+ *
+ */
+function updateIcon(calciteIcon: HTMLCalciteIconElement, value: boolean, falseIsExpected: boolean = false) {
+  const success = falseIsExpected ? !value : value;
+  calciteIcon.icon = success ? "check-circle" : "x-circle";
+  calciteIcon.textLabel = value?.toString();
+  calciteIcon.style.setProperty(
+    "--calcite-ui-icon-color",
+    success ? "var(--calcite-color-status-success)" : "var(--calcite-color-status-danger)",
+  );
+}
 
 /**
  * A function to apply an effect to a list item layer if it is a feature layer
@@ -146,12 +148,6 @@ function applyFeatureEffect(listItem: ListItem, effect: string) {
  * A function to set up the event listeners for the app
  */
 function setUp() {
-  const toggleModalEl = document.getElementById("toggle-modal") as HTMLCalciteActionElement;
-  const navigationEl = document.getElementById("nav") as HTMLCalciteNavigationElement;
-  const panelEl = document.getElementById("sheet-panel") as HTMLCalcitePanelElement;
-  const modalEl = document.getElementById("modal") as HTMLCalciteModalElement;
-  const sheetEl = document.getElementById("sheet") as HTMLCalciteSheetElement;
-
   toggleModalEl?.addEventListener("click", () => handleModalChange());
   navigationEl?.addEventListener("calciteNavigationActionSelect", () => handleSheetOpen());
 
