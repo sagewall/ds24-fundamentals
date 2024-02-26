@@ -1,0 +1,152 @@
+{
+  "CDN Links": {
+    "prefix": "step-01-add-sdk-via-cdn",
+    "body": [
+      "<link rel=\"stylesheet\" href=\"https://js.arcgis.com/4.29/esri/themes/light/main.css\" />",
+      "<script src=\"https://js.arcgis.com/4.29/\"></script>"
+    ],
+    "description": "Code snippet for including ArcGIS CSS and JS in the head of HTML documents"
+  },
+  "ArcGIS Require": {
+    "prefix": "step-02-script-require",
+    "body": [
+      "<script>",
+      "  require([\"esri/Map\", \"esri/views/MapView\"], (Map, MapView) => {",
+      "    // Step 2: Create a WebMap instance",
+      "    // Step 3: Create a MapView instance",
+      "  });",
+      "</script>"
+    ],
+    "description": "Code snippet for requiring ArcGIS modules"
+  },
+  "WebMap Creation": {
+    "prefix": "step-03-webmap",
+    "body": [
+      "const map = new WebMap({",
+      "  portalItem: {",
+      "    id: \"41281c51f9de45edaf1c8ed44bb10e30\",",
+      "  },",
+      "});"
+    ],
+    "description": "Code snippet for creating a new WebMap"
+  },
+  "MapView Creation": {
+    "prefix": "step-04-mapview",
+    "body": ["const view = new MapView({", "  map,", "  container: \"viewDiv\",", "});"],
+    "description": "Code snippet for creating a new MapView"
+  },
+  "LayerList Creation": {
+    "prefix": "step-05-layerlist",
+    "body": [
+      "const layerList = new LayerList({",
+      "  container: \"layer-list-block\",",
+      "  selectionMode: \"multiple\",",
+      "  view,",
+      "});"
+    ],
+    "description": "Code snippet for creating a new LayerList"
+  },
+  "LayerList Selection Change": {
+    "prefix": "step-06-event-selected-items",
+    "body": [
+      "layerList.selectedItems.on(\"change\", (event) => {",
+      "  const { removed, added } = event;",
+      "  removed.forEach((listItem) => applyFeatureEffect(listItem, \"none\"));",
+      "  added.forEach((listItem) => applyFeatureEffect(listItem, \"drop-shadow(2px, 2px, 3px) saturate(300%)\"));",
+      "});"
+    ],
+    "description": "Code snippet for handling LayerList selection change"
+  },
+  "LayerList Watch Selected Items": {
+    "prefix": "step-07-layerlistwatch",
+    "body": [
+      "reactiveUtils.watch(",
+      "  () => layerList.selectedItems.toArray(),",
+      "  (newSelectedItems, oldSelectedItems) => {",
+      "    const added = newSelectedItems.filter((item) => !oldSelectedItems.includes(item));",
+      "    const removed = oldSelectedItems.filter((item) => !newSelectedItems.includes(item));",
+      "    removed.forEach((listItem) => applyFeatureEffect(listItem, \"none\"));",
+      "    added.forEach((listItem) => applyFeatureEffect(listItem, \"drop-shadow(2px, 2px, 3px) saturate(300%)\"));",
+      "  },",
+      ");"
+    ],
+    "description": "Code snippet for watching LayerList selection changes"
+  },
+  "Watch Visible Layers": {
+    "prefix": "step-08-watchvisiblelayers",
+    "body": [
+      "reactiveUtils.watch(",
+      "  () =>",
+      "    view.map.layers",
+      "      .filter((layer) => layer.visible)",
+      "      .map((layer) => layer.title)",
+      "      .reverse(),",
+      "  (titles) => {",
+      "    if (!visibleLayersList) {",
+      "      console.warn('Element with id \"visible-layers-list\" not found');",
+      "      return;",
+      "    }",
+      "    visibleLayersList.innerHTML = \"\";",
+      "    titles.forEach((title) => {",
+      "      const listItem = document.createElement(\"calcite-list-item\");",
+      "      listItem.label = title;",
+      "      listItem.value = title;",
+      "      visibleLayersList.appendChild(listItem);",
+      "    });",
+      "  },",
+      ");"
+    ],
+    "description": "Code snippet for watching visible layers and updating a list"
+  },
+  "Watch View Properties": {
+    "prefix": "step-09-watch-view-properties",
+    "body": [
+      "reactiveUtils.watch(",
+      "  () => view.ready,",
+      "  (ready) => {",
+      "    if (!readyIcon) {",
+      "      console.warn(\"Required elements not found\");",
+      "      return;",
+      "    }",
+      "",
+      "    console.log(`ready is \\${ready}`);",
+      "    updateIcon(readyIcon, ready);",
+      "  },",
+      "  { initial: true },",
+      ");",
+      "",
+      "reactiveUtils.watch(",
+      "  () => view.stationary,",
+      "  (stationary) => {",
+      "    if (!latitudeChip || !longitudeChip || !stationaryIcon || !zoomChip) {",
+      "      console.warn(\"Required elements not found\");",
+      "      return;",
+      "    }",
+      "",
+      "    console.log(`stationary is \\${stationary}`);",
+      "    updateIcon(stationaryIcon, stationary);",
+      "",
+      "    zoomChip.innerHTML = `${view.zoom?.toFixed(0)}`;",
+      "    latitudeChip.innerHTML = `${view.center?.latitude.toFixed(3)}`;",
+      "    longitudeChip.innerHTML = `${view.center?.longitude.toFixed(3)}`;",
+      "  },",
+      "  { initial: true },",
+      ");",
+      "",
+      "reactiveUtils.watch(",
+      "  () => view.updating,",
+      "  (updating) => {",
+      "    if (!updatingIcon) {",
+      "      console.warn(\"Required elements not found\");",
+      "      return;",
+      "    }",
+      "",
+      "    console.log(`updating is \\${updating}`);",
+      "    updateIcon(updatingIcon, updating, true);",
+      "  },",
+      "  { initial: true },",
+      ");"
+    ],
+    "description": "Code snippet for watching view properties"
+  }
+}

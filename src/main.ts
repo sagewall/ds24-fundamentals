@@ -26,45 +26,34 @@ const zoomChip = document.querySelector("#zoom-chip") as HTMLCalciteChipElement;
 
 setUpEventListeners();
 
+// Step 3: Create a WebMap instance
 const map = new WebMap({
   portalItem: {
     id: "41281c51f9de45edaf1c8ed44bb10e30",
   },
 });
 
+// Step 4: Create a MapView instance
 const view = new MapView({
   map,
   container: "viewDiv",
 });
 
+// Step 5: Create a LayerList instance
 const layerList = new LayerList({
   container: "layer-list-block",
   selectionMode: "multiple",
   view,
 });
 
+// Step 6: Listen for changes to the layer list selected items collection
 // layerList.selectedItems.on("change", (event) => {
 //   const { removed, added } = event;
 //   removed.forEach((listItem) => applyFeatureEffect(listItem, "none"));
 //   added.forEach((listItem) => applyFeatureEffect(listItem, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
 // });
 
-// reactiveUtils.watch(
-//   () => layerList.selectedItems.toArray(),
-//   (newSelectedItems, oldSelectedItems) => {
-//     const added = newSelectedItems.filter((item) => !oldSelectedItems.includes(item));
-//     const removed = oldSelectedItems.filter((item) => !newSelectedItems.includes(item));
-
-//     const oldCommon = oldSelectedItems.filter((item) => newSelectedItems.includes(item));
-//     const newCommon = newSelectedItems.filter((item) => oldSelectedItems.includes(item));
-//     const moved = oldCommon.filter((item, index) => item !== newCommon[index]);
-
-//     console.log("added", added);
-//     console.log("removed", removed);
-//     console.log("moved", moved);
-//   },
-// );
-
+// Step 7: Watch for changes to the layer list's selected items
 reactiveUtils.watch(
   () => layerList.selectedItems.toArray(),
   (newSelectedItems, oldSelectedItems) => {
@@ -75,6 +64,29 @@ reactiveUtils.watch(
   },
 );
 
+// Step 8: Watch for changes to the map's visible layers
+reactiveUtils.watch(
+  () =>
+    view.map.layers
+      .filter((layer) => layer.visible)
+      .map((layer) => layer.title)
+      .reverse(),
+  (titles) => {
+    if (!visibleLayersList) {
+      console.warn('Element with id "visible-layers-list" not found');
+      return;
+    }
+    visibleLayersList.innerHTML = "";
+    titles.forEach((title) => {
+      const listItem = document.createElement("calcite-list-item");
+      listItem.label = title;
+      listItem.value = title;
+      visibleLayersList.appendChild(listItem);
+    });
+  },
+);
+
+// Step 9: Watch for changes to the view's ready, stationary, and updating properties
 reactiveUtils.watch(
   () => view.ready,
   (ready) => {
@@ -119,27 +131,6 @@ reactiveUtils.watch(
     updateIcon(updatingIcon, updating, true);
   },
   { initial: true },
-);
-
-reactiveUtils.watch(
-  () =>
-    view.map.layers
-      .filter((layer) => layer.visible)
-      .map((layer) => layer.title)
-      .reverse(),
-  (titles) => {
-    if (!visibleLayersList) {
-      console.warn('Element with id "visible-layers-list" not found');
-      return;
-    }
-    visibleLayersList.innerHTML = "";
-    titles.forEach((title) => {
-      const listItem = document.createElement("calcite-list-item");
-      listItem.label = title;
-      listItem.value = title;
-      visibleLayersList.appendChild(listItem);
-    });
-  },
 );
 
 /**

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/esri.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Let's make a map!</title>
+
+    <script type="module" src="https://js.arcgis.com/calcite-components/2.4.0/calcite.esm.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.4.0/calcite.css" />
+
+    <!-- Step 1 Add the SDK CSS and JavaScipt files via CDN -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.29/"></script>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      calcite-menu-item {
+        --calcite-color-foreground-1: var(--calcite-color-background);
+      }
+
+      calcite-navigation-logo {
+        --calcite-ui-icon-color: var(--calcite-color-brand);
+      }
+
+      calcite-shell-panel[slot="panel-start"] calcite-panel {
+        border-top: 0;
+      }
+
+      calcite-action-pad {
+        margin-inline-end: 0.5rem;
+      }
+
+      #modal hr {
+        margin: 1rem 0;
+        border: 0;
+        border-bottom: 1px solid var(--calcite-color-border-3);
+      }
+
+      #modal ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      #modal calcite-notice {
+        margin-bottom: 1.25rem;
+      }
+
+      .grid-container {
+        margin: 2rem;
+        height: 100%;
+        max-height: calc(100% - 64px);
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-template-columns: minmax(18rem, 0.5fr) 1fr 1fr;
+        grid-template-rows: 0.4fr 1fr 1fr;
+        gap: 2rem 2rem;
+        grid-template-areas:
+          "panel-start panel-info panel-info-2"
+          "panel-start panel-map panel-map"
+          "panel-start panel-map panel-map";
+      }
+      .panel-map {
+        grid-area: panel-map;
+      }
+
+      .panel-info {
+        grid-area: panel-info;
+      }
+
+      .panel-info-2 {
+        grid-area: panel-info-2;
+      }
+
+      .panel-start {
+        grid-area: panel-start;
+      }
+
+      .grid-container calcite-panel {
+        box-shadow: var(--calcite-shadow-sm);
+      }
+
+      calcite-meter {
+        margin: 1rem;
+      }
+
+      calcite-panel {
+        border-block-start: 0;
+      }
+
+      calcite-shell {
+        background-color: var(--calcite-color-background);
+      }
+
+      calcite-label:last-of-type {
+        --calcite-label-margin-bottom: 0;
+      }
+
+      calcite-list-item calcite-chip {
+        margin-inline-end: 0.5rem;
+      }
+
+      calcite-panel.panel-info-2 calcite-icon {
+        --calcite-ui-icon-color: var(--calcite-color-status-danger);
+      }
+
+      @media screen and (max-width: 800px) {
+        .grid-container {
+          grid-template-columns: 1fr;
+          grid-template-areas: "panel-start" "panel-info" "panel-info-2" "panel-map";
+        }
+        .panel-start {
+          max-height: 40vh;
+        }
+        .panel-map {
+          height: 40vh;
+        }
+      }
+    </style>
+
+    <!-- Step 2 Add a script tag and require the nessessary modules-->
+    <script>
+      require(["esri/WebMap", "esri/views/MapView"], (WebMap, MapView) => {
+        // Step 3: Create a WebMap instance
+        const map = new WebMap({
+          portalItem: {
+            id: "41281c51f9de45edaf1c8ed44bb10e30",
+          },
+        });
+        // Step 4: Create a MapView instance
+        const view = new MapView({
+          map,
+          container: "viewDiv",
+        });
+      });
+    </script>
+
+    <script></script>
+  </head>
+  <body>
+    <calcite-shell>
+      <calcite-navigation navigation-action slot="header" id="nav">
+        <calcite-navigation-logo
+          href=""
+          icon="viewshed"
+          alt="Application logo"
+          slot="logo"
+          heading="ArcGIS Maps SDK for JavaScript, Programming Patterns and API Fundamentals"
+          description="Esri Developer Summit 2024"
+        ></calcite-navigation-logo>
+        <calcite-action-pad layout="horizontal" expand-disabled slot="content-end">
+          <calcite-action id="toggle-modal" text="About this application" icon="information"></calcite-action>
+        </calcite-action-pad>
+
+        <calcite-tooltip placement="bottom" reference-element="toggle-modal" close-on-click slot="content-end"
+          >About this application</calcite-tooltip
+        >
+      </calcite-navigation>
+
+      <calcite-panel>
+        <div class="grid-container">
+          <calcite-panel class="panel-map" heading="Map Panel">
+            <div id="viewDiv"></div>
+          </calcite-panel>
+          <calcite-panel class="panel-info" heading="MapView" description="zoom and center" collapsible>
+            <calcite-list>
+              <calcite-list-item label="zoom" value="zoom">
+                <calcite-chip id="zoom-chip" slot="content-end" kind="brand"></calcite-chip>
+              </calcite-list-item>
+              <calcite-list-item label="latitude" value="latitude">
+                <calcite-chip id="latitude-chip" slot="content-end" kind="brand"></calcite-chip>
+              </calcite-list-item>
+              <calcite-list-item label="longitude" value="longitude">
+                <calcite-chip id="longitude-chip" slot="content-end" kind="brand"></calcite-chip>
+              </calcite-list-item>
+            </calcite-list>
+          </calcite-panel>
+          <calcite-panel class="panel-info-2" heading="MapView" description="state" collapsible>
+            <calcite-list>
+              <calcite-list-item label="ready is true" value="ready is true">
+                <calcite-icon id="ready-icon" slot="content-start" icon="x-circle" text-label="false"></calcite-icon>
+              </calcite-list-item>
+              <calcite-list-item label="stationary is true" value="stationary is true">
+                <calcite-icon
+                  id="stationary-icon"
+                  slot="content-start"
+                  icon="x-circle"
+                  text-label="false"
+                ></calcite-icon>
+              </calcite-list-item>
+              <calcite-list-item label="updating is false" value="updating is is false">
+                <calcite-icon id="updating-icon" slot="content-start" icon="x-circle" text-label="false"></calcite-icon>
+              </calcite-list-item>
+            </calcite-list>
+          </calcite-panel>
+          <calcite-panel class="panel-start" heading="Layers">
+            <calcite-block
+              id="layer-list-block"
+              open
+              collapsible
+              heading="LayerList widget"
+              description="Select a layer to apply a layer effect"
+            >
+            </calcite-block>
+
+            <calcite-block
+              open
+              collapsible
+              heading="Visible Layers"
+              description="Currently visible map layers are listed below. To change a layer's visibility, click its corresponding visibility button in the LayerList widget above."
+            >
+              <calcite-list id="visible-layers-list"></calcite-list>
+            </calcite-block>
+          </calcite-panel>
+        </div>
+      </calcite-panel>
+    </calcite-shell>
+
+    <!-- Demo template interactive elements -->
+    <calcite-modal id="modal">
+      <div slot="header">About this application</div>
+      <div slot="content">
+        <calcite-notice open>
+          <span slot="title"
+            >This demonstration application is a companion resource to the "ArcGIS Maps SDK for Javascript: Programming
+            Patterns and API Fundamentals" session at Esri Developer Summit 2024.
+          </span>
+        </calcite-notice>
+        This example illustrates how to display a web map to a web page.
+        <ul>
+          <li>Add Modules</li>
+          <li>Display a web map</li>
+        </ul>
+        Learn more and follow along in this
+        <calcite-link target="https://developers.arcgis.com/javascript/latest/tutorials/display-a-web-map/" href=""
+          >tutorial</calcite-link
+        >.
+        <hr />
+        <calcite-link target="_blank" href="">Application source code</calcite-link> is available in the
+        <calcite-link target="_blank" href="https://github.com/EsriDevEvents/"
+          >Esri Developer Events GitHub organization</calcite-link
+        >.
+        <hr />
+        <calcite-link target="_blank" href="">Map data </calcite-link> is sourced from Esri Data and Maps /
+        <calcite-link target="_blank" href="https://livingatlas.arcgis.com/en/home/"
+          >ArcGIS Living Atlas of the World</calcite-link
+        >.
+      </div>
+    </calcite-modal>
+
+    <calcite-sheet id="sheet" display-mode="float" width-scale="m">
+      <calcite-panel
+        heading="Esri Developer Summit 2024"
+        description="Helpful conference links"
+        closable
+        id="sheet-panel"
+      >
+        <calcite-menu layout="vertical" label="2024 Developer Summit Menu">
+          <calcite-menu-item
+            text="2024 Developer Summit Overview"
+            icon-end="launch"
+            href="https://www.esri.com/en-us/about/events/devsummit/overview"
+            target="_blank"
+          ></calcite-menu-item>
+          <calcite-menu-item
+            text="Esri Developer Events GitHub"
+            icon-end="launch"
+            href="https://github.com/EsriDevEvents"
+            target="_blank"
+          ></calcite-menu-item>
+          <calcite-menu-item
+            text="Esri.com"
+            icon-end="launch"
+            href="https://esri.com"
+            target="_blank"
+          ></calcite-menu-item>
+        </calcite-menu>
+        <calcite-notice open slot="footer" width="full" scale="s">
+          <span slot="title">Note</span>
+          <span slot="message"
+            >This is a demonstration application showcasing platform functionality. While Esri strives to ensure the
+            sample is accurate, it may not reflect implementation behavior in certain environments.</span
+          >
+        </calcite-notice>
+      </calcite-panel>
+    </calcite-sheet>
+  </body>
+</html>
