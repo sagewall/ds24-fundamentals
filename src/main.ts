@@ -46,14 +46,7 @@ const layerList = new LayerList({
   view,
 });
 
-// Step 6: Listen for changes to the layer list selected items collection
-// layerList.selectedItems.on("change", (event) => {
-//   const { removed, added } = event;
-//   removed.forEach((listItem) => applyFeatureEffect(listItem, "none"));
-//   added.forEach((listItem) => applyFeatureEffect(listItem, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
-// });
-
-// Step 7: Watch for changes to the layer list's selected items
+// Step 6: Watch for changes to the layer list's selected items
 reactiveUtils.watch(
   () => layerList.selectedItems.toArray(),
   (newSelectedItems, oldSelectedItems) => {
@@ -64,7 +57,7 @@ reactiveUtils.watch(
   },
 );
 
-// Step 8: Watch for changes to the map's visible layers
+// Step 7: Watch for changes to the map's visible layers
 reactiveUtils.watch(
   () =>
     view.map.layers
@@ -86,7 +79,7 @@ reactiveUtils.watch(
   },
 );
 
-// Step 9: Watch for changes to the view's ready, stationary, and updating properties
+// Step 8: Watch for changes to the view's ready, stationary, and updating properties
 reactiveUtils.watch(
   () => view.ready,
   (ready) => {
@@ -97,6 +90,20 @@ reactiveUtils.watch(
 
     console.log(`ready is ${ready}`);
     updateIcon(readyIcon, ready);
+  },
+  { initial: true },
+);
+
+reactiveUtils.watch(
+  () => view.updating,
+  (updating) => {
+    if (!updatingIcon) {
+      console.warn("Required elements not found");
+      return;
+    }
+
+    console.log(`updating is ${updating}`);
+    updateIcon(updatingIcon, updating, true);
   },
   { initial: true },
 );
@@ -115,20 +122,6 @@ reactiveUtils.watch(
     zoomChip.innerHTML = `${view.zoom?.toFixed(0)}`;
     latitudeChip.innerHTML = `${view.center?.latitude.toFixed(3)}`;
     longitudeChip.innerHTML = `${view.center?.longitude.toFixed(3)}`;
-  },
-  { initial: true },
-);
-
-reactiveUtils.watch(
-  () => view.updating,
-  (updating) => {
-    if (!updatingIcon) {
-      console.warn("Required elements not found");
-      return;
-    }
-
-    console.log(`updating is ${updating}`);
-    updateIcon(updatingIcon, updating, true);
   },
   { initial: true },
 );
