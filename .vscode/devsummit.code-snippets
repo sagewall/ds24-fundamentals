@@ -7,20 +7,36 @@
     ],
     "description": "Code snippet for including ArcGIS CSS and JS in the head of HTML documents"
   },
+  "HTML Full Size Style": {
+    "prefix": "step-02-fullsizestyle",
+    "body": [
+      "<style>",
+      "  html,",
+      "  body,",
+      "  #viewDiv {",
+      "    height: 100%;",
+      "    width: 100%;",
+      "    margin: 0;",
+      "    padding: 0;",
+      "  }",
+      "</style>"
+    ],
+    "description": "Code snippet for setting HTML, body, and #viewDiv to full size"
+  },
   "ArcGIS Require": {
-    "prefix": "step-02-script-require",
+    "prefix": "step-03-script-require",
     "body": [
       "<script>",
-      "  require([\"esri/Map\", \"esri/views/MapView\"], (Map, MapView) => {",
-      "    // Step 2: Create a WebMap instance",
-      "    // Step 3: Create a MapView instance",
+      "  require([\"esri/WebMap\", \"esri/views/MapView\"], (WebMap, MapView) => {",
+      "    // Step 4: Create a WebMap instance",
+      "    // Step 5: Create a MapView instance",
       "  });",
       "</script>"
     ],
     "description": "Code snippet for requiring ArcGIS modules"
   },
   "WebMap Creation": {
-    "prefix": "step-03-webmap",
+    "prefix": "step-04-webmap",
     "body": [
       "const map = new WebMap({",
       "  portalItem: {",
@@ -31,12 +47,12 @@
     "description": "Code snippet for creating a new WebMap"
   },
   "MapView Creation": {
-    "prefix": "step-04-mapview",
+    "prefix": "step-05-mapview",
     "body": ["const view = new MapView({", "  map,", "  container: \"viewDiv\",", "});"],
     "description": "Code snippet for creating a new MapView"
   },
   "LayerList Creation": {
-    "prefix": "step-05-layerlist",
+    "prefix": "step-06-layerlist",
     "body": [
       "const layerList = new LayerList({",
       "  container: \"layer-list-block\",",
@@ -47,7 +63,7 @@
     "description": "Code snippet for creating a new LayerList"
   },
   "LayerList Watch Selected Items": {
-    "prefix": "step-06-layerlistwatch",
+    "prefix": "step-07-layerlistwatch",
     "body": [
       "reactiveUtils.watch(",
       "  () => layerList.selectedItems.toArray(),",
@@ -62,7 +78,7 @@
     "description": "Code snippet for watching LayerList selection changes"
   },
   "Watch Visible Layers": {
-    "prefix": "step-07-watchvisiblelayers",
+    "prefix": "step-08-watchvisiblelayers",
     "body": [
       "reactiveUtils.watch(",
       "  () =>",
@@ -88,7 +104,7 @@
     "description": "Code snippet for watching visible layers and updating a list"
   },
   "Watch View Properties": {
-    "prefix": "step-08-watch-view-properties",
+    "prefix": "step-09-watch-view-properties",
     "body": [
       "reactiveUtils.watch(",
       "  () => view.ready,",

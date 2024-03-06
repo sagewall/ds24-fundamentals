@@ -26,27 +26,25 @@ const zoomChip = document.querySelector("#zoom-chip") as HTMLCalciteChipElement;
 
 setUpEventListeners();
 
-// Step 3: Create a WebMap instance
 const map = new WebMap({
   portalItem: {
     id: "41281c51f9de45edaf1c8ed44bb10e30",
   },
 });
 
-// Step 4: Create a MapView instance
 const view = new MapView({
   map,
   container: "viewDiv",
 });
 
-// Step 5: Create a LayerList instance
+// Step 6: Create a LayerList instance
 const layerList = new LayerList({
   container: "layer-list-block",
   selectionMode: "multiple",
   view,
 });
 
-// Step 6: Watch for changes to the layer list's selected items
+// Step 7: Watch for changes to the layer list's selected items
 reactiveUtils.watch(
   () => layerList.selectedItems.toArray(),
   (newSelectedItems, oldSelectedItems) => {
@@ -57,7 +55,7 @@ reactiveUtils.watch(
   },
 );
 
-// Step 7: Watch for changes to the map's visible layers
+// Step 8: Watch for changes to the map's visible layers
 reactiveUtils.watch(
   () =>
     view.map.layers
@@ -79,7 +77,7 @@ reactiveUtils.watch(
   },
 );
 
-// Step 8: Watch for changes to the view's ready, stationary, and updating properties
+// Step 9: Watch for changes to the view's ready, stationary, and updating properties
 reactiveUtils.watch(
   () => view.ready,
   (ready) => {
