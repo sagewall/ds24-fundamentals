@@ -10,37 +10,10 @@
     <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.4.0/calcite.css" />
 
     <!-- Step 1 Add the SDK CSS and JavaScipt files via CDN -->
-    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/4.29/"></script>
 
     <!-- Step 2 Add styles -->
-    <style>
-      html,
-      body,
-      #viewDiv {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
 
     <!-- Step 3 Add a script tag and require the nessessary modules-->
-    <script>
-      require(["esri/WebMap", "esri/views/MapView"], (WebMap, MapView) => {
-        // Step 4: Create a WebMap instance
-        const map = new WebMap({
-          portalItem: {
-            id: "41281c51f9de45edaf1c8ed44bb10e30",
-          },
-        });
-        // Step 5: Create a MapView instance
-        const view = new MapView({
-          map,
-          container: "viewDiv",
-        });
-      });
-    </script>
   </head>
   <body>
     <calcite-shell>

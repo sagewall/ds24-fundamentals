@@ -38,91 +38,12 @@ const view = new MapView({
 });
 
 // Step 6: Create a LayerList instance
-const layerList = new LayerList({
-  container: "layer-list-block",
-  selectionMode: "multiple",
-  view,
-});
 
 // Step 7: Watch for changes to the layer list's selected items
-reactiveUtils.watch(
-  () => layerList.selectedItems.toArray(),
-  (newSelectedItems, oldSelectedItems) => {
-    const added = newSelectedItems.filter((item) => !oldSelectedItems.includes(item));
-    const removed = oldSelectedItems.filter((item) => !newSelectedItems.includes(item));
-    removed.forEach((listItem) => applyFeatureEffect(listItem, "none"));
-    added.forEach((listItem) => applyFeatureEffect(listItem, "drop-shadow(2px, 2px, 3px) saturate(300%)"));
-  },
-);
 
 // Step 8: Watch for changes to the map's visible layers
-reactiveUtils.watch(
-  () =>
-    view.map.layers
-      .filter((layer) => layer.visible)
-      .map((layer) => layer.title)
-      .reverse(),
-  (titles) => {
-    if (!visibleLayersList) {
-      console.warn('Element with id "visible-layers-list" not found');
-      return;
-    }
-    visibleLayersList.innerHTML = "";
-    titles.forEach((title) => {
-      const listItem = document.createElement("calcite-list-item");
-      listItem.label = title;
-      listItem.value = title;
-      visibleLayersList.appendChild(listItem);
-    });
-  },
-);
 
 // Step 9: Watch for changes to the view's ready, stationary, and updating properties
-reactiveUtils.watch(
-  () => view.ready,
-  (ready) => {
-    if (!readyIcon) {
-      console.warn("Required elements not found");
-      return;
-    }
-
-    console.log(`ready is ${ready}`);
-    updateIcon(readyIcon, ready);
-  },
-  { initial: true },
-);
-
-reactiveUtils.watch(
-  () => view.updating,
-  (updating) => {
-    if (!updatingIcon) {
-      console.warn("Required elements not found");
-      return;
-    }
-
-    console.log(`updating is ${updating}`);
-    updateIcon(updatingIcon, updating, true);
-  },
-  { initial: true },
-);
-
-reactiveUtils.watch(
-  () => view.stationary,
-  (stationary) => {
-    if (!latitudeChip || !longitudeChip || !stationaryIcon || !zoomChip) {
-      console.warn("Required elements not found");
-      return;
-    }
-
-    console.log(`stationary is ${stationary}`);
-    updateIcon(stationaryIcon, stationary);
-
-    zoomChip.innerHTML = `${view.zoom?.toFixed(0)}`;
-    latitudeChip.innerHTML = `${view.center?.latitude.toFixed(3)}`;
-    longitudeChip.innerHTML = `${view.center?.longitude.toFixed(3)}`;
-  },
-  { initial: true },
-);
 
 /**
  * A function to apply an effect to a list item layer if it is a feature layer
