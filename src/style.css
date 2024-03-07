@@ -98,7 +98,7 @@ calcite-panel.panel-info-2 calcite-icon {
   --calcite-ui-icon-color: var(--calcite-color-status-danger);
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 600px) {
   .grid-container {
     grid-template-columns: 1fr;
     grid-template-areas: "panel-start" "panel-info" "panel-info-2" "panel-map";
